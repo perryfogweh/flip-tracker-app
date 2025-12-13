@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 class="mb-4">Project Dashboard</h1>
+
+<div class="row">
+    {% for project in projects %}
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <h4 class="card-title">{{ project.name }}</h4>
+                <p class="card-subtitle text-muted">{{ project.address }}</p>
+                <hr>
+
+                <p><strong>Status:</strong> {{ project.status }}</p>
+                <p><strong>Progress:</strong> {{ project.progress_percent }}%</p>
+
+                <p>
+                    <strong>Contractors:</strong>
+                    {{ project.contractors | length }}
+                </p>
+
+                <p>
+                    <strong>Upcoming Inspections:</strong>
+                    {% set upcoming = project.inspections 
+                        | selectattr("status", "in", ["Scheduled", "Requested"]) 
+                        | list
+                    %}
+                    {{ upcoming | length }}
+                </p>
+
+                <a href="{{ url_for('project_detail', project_id=project.id) }}"
+                   class="btn btn-primary btn-sm">
+                    View Details
+                </a>
+
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

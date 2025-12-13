@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Contractor Login</h2>
+
+<form method="post" class="mt-3">
+    <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input type="text" name="username" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" name="password" class="form-control" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Login</button>
+</form>
+
+<p class="mt-3 text-muted">
+    Demo accounts from sample data:
+    <br>Username: <code>aceplumb</code> / Password: <code>password123</code>
+    <br>Username: <code>sparky</code> / Password: <code>password123</code>
+</p>
+
+{% endblock %}

@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>{{ project.name }}</h2>
+<p class="text-muted">{{ project.address }}</p>
+
+<div class="mb-3">
+    <a href="{{ url_for('new_expense', project_id=project.id) }}" class="btn btn-sm btn-outline-primary">
+        + Add Expense
+    </a>
+    <a href="{{ url_for('new_project') }}" class="btn btn-sm btn-outline-secondary">
+        + New Project
+    </a>
+</div>
+
+<div class="row mb-4">
+
+    <!-- Status & Progress -->
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5>Status & Progress</h5>
+                <p><strong>Status:</strong> {{ project.status }}</p>
+                <p><strong>Progress:</strong> {{ project.progress_percent }}%</p>
+
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar"
+                         style="width: {{ project.progress_percent }}%;"
+                         aria-valuenow="{{ project.progress_percent }}"
+                         aria-valuemin="0" aria-valuemax="100">
+                        {{ project.progress_percent }}%
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Budget & Expenses + Chart -->
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5>Budget & Expenses</h5>
+
+                <p>
+                    <strong>Total Budget:</strong>
+                    {% if project.budget %}
+                        ${{ "%.2f"|format(project.budget.total_budget) }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </p>
+
+                <p><strong>Total Spent:</strong> ${{ "%.2f"|format(total_expenses) }}</p>
+                <p><strong>Remaining:</strong> ${{ "%.2f"|format(remaining_budget) }}</p>
+
+                <canvas id="budgetChart" height="150"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contractors -->
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5>Contractors</h5>
+
+                {% if project.contractors %}
+                    <ul class="mb-0">
+                        {% for c in project.contractors %}
+                        <li>{{ c.name }} ({{ c.trade_type }}) – {{ c.phone }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No contractors assigned.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="row">
+
+    <!-- Tasks -->
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5>Tasks</h5>
+
+                {% if project.tasks %}
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Due</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for t in project.tasks %}
+                    <tr>
+                        <td>{{ t.title }}</td>
+                        <td>{{ t.status }}</td>
+                        <td>{{ t.due_date or "" }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                    <p>No tasks yet.</p>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Inspections -->
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5>Inspections / Permits</h5>
+
+                {% if project.inspections %}
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in project.inspections %}
+                    <tr>
+                        <td>{{ i.type }}</td>
+                        <td>{{ i.status }}</td>
+                        <td>{{ i.date or "" }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                    <p>No inspections yet.</p>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- Status Reports -->
+<div class="card mt-3">
+    <div class="card-body">
+        <h5>Status Reports</h5>
+
+        {% if project.reports %}
+            {% for r in project.reports %}
+            <div class="mb-3">
+                <h6>{{ r.report_date }}</h6>
+                <p><strong>Progress:</strong> {{ r.progress_summary }}</p>
+                <p><strong>Costs:</strong> {{ r.cost_summary }}</p>
+                <p><strong>Timeline:</strong> {{ r.timeline_summary }}</p>
+                <hr>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No reports yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<a href="{{ url_for('dashboard') }}" class="btn btn-link mt-3">&larr; Back to Dashboard</a>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('budgetChart').getContext('2d');
+    const budgetChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ chart_labels|tojson }},
+            datasets: [{
+                label: 'Amount ($)',
+                data: {{ chart_data|tojson }},
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
+
+{% endblock %}

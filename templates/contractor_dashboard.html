@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Contractor Dashboard</h2>
+
+<p>Logged in as: <strong>{{ contractor.name }}</strong> ({{ contractor.trade_type }})</p>
+
+<p>
+    Project: <strong>{{ project.name }}</strong><br>
+    Address: {{ project.address }}
+</p>
+
+<h4 class="mt-4">Assigned Project Tasks</h4>
+
+{% if tasks %}
+<table class="table table-sm">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Due</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for t in tasks %}
+    <tr>
+        <td>{{ t.title }}</td>
+        <td>{{ t.status }}</td>
+        <td>{{ t.due_date or "" }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No tasks yet.</p>
+{% endif %}
+
+<a href="{{ url_for('contractor_logout') }}" class="btn btn-link mt-3">Log out</a>
+
+{% endblock %}
