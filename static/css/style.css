@@ -1,0 +1,42 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #22c1c3, #7bdf75, #fdbb2d);
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 18px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 14px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+}
+
+.topbar img {
+  height: 52px;
+  width: auto;
+}
+
+.topbar .title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.page-card {
+  margin-top: 16px;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+}
